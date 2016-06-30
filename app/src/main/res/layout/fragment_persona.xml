@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+            <EditText
+                android:id="@+id/etNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Nombre"
+                android:layout_weight="1"
+                android:visibility="invisible"/>
+            <Spinner
+                android:id="@+id/spinnerNombre"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/btn_add"
+                android:layout_marginTop="23dp" />
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/common_signin_btn_light_text_default">
+
+            <!--<ImageView-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:id="@+id/image_content"-->
+            <!--android:src="@drawable/content_music"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:weightSum="1">-->
+            <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" >-->
+            <!--<TableLayout-->
+            <!--android:id="@+id/tableLayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:padding="10dp"-->
+            <!--android:shrinkColumns="*"-->
+            <!--android:stretchColumns="*" >-->
+            <!--</TableLayout>-->
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
+            <!--</ScrollView>-->
+            <!--</LinearLayout>-->
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>
+
+
