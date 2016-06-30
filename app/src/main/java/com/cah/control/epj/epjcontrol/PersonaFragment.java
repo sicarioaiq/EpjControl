@@ -39,26 +39,13 @@ import static com.cah.control.epj.epjcontrol.CustomAdapter.CustomAdapter.*;
 
 @SuppressLint("NewApi")
 public class PersonaFragment extends Fragment implements AdapterView.OnItemSelectedListener{
-    TableLayout table_layout;
     View rootView;
     EditText  etNombre;
     TMPersonaDA sqlcon;
     Spinner spinnerNombre;
     ListView list;
-    String[] etiquetaDescripcion ={
-            "César Aiquipa Herrera",
-            "Mariana Tavara",
-            "Eros Wong",
-            "Aaron Wong",
-            "Jacky Huaringa",
-            "Android Folder",
-            "VLC Player",
-            "Cold War"
-    };
-
     ArrayList<String> arrayListNombres;
     ArrayList<String> arrayListEstados;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
