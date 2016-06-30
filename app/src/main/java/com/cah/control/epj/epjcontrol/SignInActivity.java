@@ -363,7 +363,6 @@ public class SignInActivity extends Activity{
                  : String.valueOf(value);
                  actualSize += " KB.";
              }
-
             return actualSize;
         }
     }

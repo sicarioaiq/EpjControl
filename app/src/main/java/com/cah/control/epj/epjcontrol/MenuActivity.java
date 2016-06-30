@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -42,6 +45,7 @@ public class MenuActivity extends Activity {
 
     private List<RowItem> rowItems;
     private CustomAdapter adapter;
+    private static long back_pressed;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -254,5 +258,32 @@ public class MenuActivity extends Activity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (back_pressed + 2000 > System.currentTimeMillis()){
+            super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+            startActivity(intent);
+            finish();
+            System.exit(0);
+        }
+        else{
+            Toast.makeText(getBaseContext(), "Precione otrar vez para salir..", Toast.LENGTH_SHORT).show();
+            back_pressed = System.currentTimeMillis();
+        }
+//        new AlertDialog.Builder(this)
+//                .setTitle("Really Exit?")
+//                .setMessage("Deseas salir del aplicativo?")
+//                .setNegativeButton(android.R.string.no, null)
+//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface arg0, int arg1) {
+//                        MenuActivity.super.onBackPressed();
+//
+//                    }
+//                }).create().show();
     }
 }
