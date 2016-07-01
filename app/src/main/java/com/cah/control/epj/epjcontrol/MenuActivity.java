@@ -263,27 +263,27 @@ public class MenuActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()){
-            super.onBackPressed();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
-            startActivity(intent);
-            finish();
-            System.exit(0);
+//            super.onBackPressed();
+            new AlertDialog.Builder(this)
+                .setTitle("EPJ San Gabino")
+                .setMessage("Deseas salir del aplicativo?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        MenuActivity.super.onBackPressed();
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+                        startActivity(intent);
+                        finish();
+                        System.exit(0);
+                    }
+                }).create().show();
         }
         else{
             Toast.makeText(getBaseContext(), "Precione otrar vez para salir..", Toast.LENGTH_SHORT).show();
             back_pressed = System.currentTimeMillis();
         }
-//        new AlertDialog.Builder(this)
-//                .setTitle("Really Exit?")
-//                .setMessage("Deseas salir del aplicativo?")
-//                .setNegativeButton(android.R.string.no, null)
-//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface arg0, int arg1) {
-//                        MenuActivity.super.onBackPressed();
-//
-//                    }
-//                }).create().show();
+
     }
 }

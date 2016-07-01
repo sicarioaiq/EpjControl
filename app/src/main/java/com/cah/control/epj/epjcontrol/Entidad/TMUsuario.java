@@ -10,6 +10,7 @@ public class TMUsuario {
     private int intId;
     private String strUsuario;
     private String strPassword;
+    private String strMail;
     private int intIdPerfil;
     private int  intActivo;
     private String strRuta;
@@ -56,8 +57,12 @@ public class TMUsuario {
         this.intActivo = intActivo;
     }
 
-    public String getStrRuta() {
-        return strRuta;
+    public String getStrMail() {
+        return strMail;
+    }
+
+    public void setStrMail(String strMail) {
+        this.strMail = strMail;
     }
 
     public void setStrRuta(String strRuta) {
@@ -76,6 +81,10 @@ public class TMUsuario {
         return  ErrorCode;
     }
 
+    public String getStrRuta() {
+        return strRuta;
+    }
+
 
     public void setErrorCode(String strErrorCode){
         this.ErrorCode = strErrorCode;
@@ -88,6 +97,7 @@ public class TMUsuario {
             b.intId = jsonObject.getInt("intId");
             b.strUsuario = jsonObject.getString("strUsuario");
             b.strPassword = jsonObject.getString("strPassword");
+//            b.strMail = jsonObject.getString("strMail");
             b.intIdPerfil = jsonObject.getInt("intIdPerfil");
             b.intActivo = jsonObject.getInt("intActivo");
             b.strRuta = jsonObject.getString("strRuta");
@@ -97,7 +107,6 @@ public class TMUsuario {
             e.printStackTrace();
             return null;
         }
-        // Return new object
         return b;
     }
 }
