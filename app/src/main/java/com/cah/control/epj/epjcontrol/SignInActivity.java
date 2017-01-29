@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.cah.control.epj.epjcontrol.DAO.TMPersonaDA;
 import com.cah.control.epj.epjcontrol.DAO.TMUsuarioDA;
 import com.cah.control.epj.epjcontrol.Entidad.TMUsuario;
+import com.cah.control.epj.epjcontrol.Entidad.UsuarioGeo;
 import com.cah.control.epj.epjcontrol.SQL.MyDbHelper;
 import com.cah.control.epj.epjcontrol.request.HttpRequest;
 
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,9 +45,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
+import java.util.Map;
+import com.google.gson.Gson;
 
 
 public class SignInActivity extends Activity{
@@ -91,28 +98,15 @@ public class SignInActivity extends Activity{
                         final Cursor c = sqlcon.readEntryUsuario(usr.toString().trim(), pwd.toString().trim());
                         sqlcon.close();
                         rows = c.getCount();
-                    }catch (Exception ex)
-                    {
-//                        ex.printStackTrace();
-                        rows = 0;
                     }
-//                    if (rows>0)
-//                    {
-//                        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
-//                        startActivity(i);
-//                    }
-//                    else
-//                    {
-//                        new HttpRequest().execute(usr, pwd);
-//                    }
+                    catch (Exception ex)
+                    {
+                    }
                 }
                 else
                 {
                     Toast.makeText(getApplicationContext(),"El Usuario y/o Contraseña son inconrrectos.", Toast.LENGTH_LONG).show();
                 }
-//                new HttpRequest().execute(usr, pwd);
-//                Intent i = new Intent(getApplicationContext(), MenuActivity.class);
-//                startActivity(i);
                 new HttpRequest().execute(usr, pwd);
             }
         });
@@ -133,7 +127,7 @@ public class SignInActivity extends Activity{
         @Override
         protected Void doInBackground(String... params) {
             Log.i("SYNC", "INIT");
-            TMUsuario objTMUsuario;
+            UsuarioGeo objUsuarioGeo;
             try {
                 if (params!=null)
                 {
@@ -143,19 +137,31 @@ public class SignInActivity extends Activity{
                         strPwd = params[1];
                     }
                 }
-                URL url = new URL("http://webserviceepj.somee.com/Service1.svc/Login");
+                URL url = new URL("http://192.168.1.40/MC.CapaServicios/Usuario.svc/Login");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(10000);
                 urlConnection.setReadTimeout(20000);
                 urlConnection.setDoOutput(true);
                 urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestMethod("POST");
+                //urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                //urlConnection.setRequestProperty("Accept", "*/*");
                 OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
                 jsonObject = new JSONObject();
-                String usuario = strUser;
-                String password = strPwd;
-                jsonObject.put("strUsuario", usuario);
-                jsonObject.put("strPassword", password);
+                UsuarioGeo obj = new UsuarioGeo();
+                obj.setUsuario(strUser);
+                obj.setClave(strPwd);
+                obj.setCorreo("");
+                //Gson gson = new Gson();
+                //String json = gson.toJson(obj);
+                //jsonObject.put("obj",json);
+                jsonObject.put("Usuario", strUser);
+                jsonObject.put("Clave", strPwd);
+                //jsonObject.putOpt("obj", obj);
+
                 out.write(jsonObject.toString());
+                //urlConnection.getResponseCode();
+                //urlConnection.getErrorStream();
                 out.close();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String response = convertStreamToString(in).trim();
@@ -163,39 +169,33 @@ public class SignInActivity extends Activity{
                 {
                     Log.i("response", response);
                     JSONObject x = new JSONObject(response);
-                    objTMUsuario = TMUsuario.fromJson(x);
-                    if (objTMUsuario!=null) {
-
-                        Log.i("objTMUsuario", String.valueOf(objTMUsuario.getIntId()));
-                        Log.i("objTMUsuario", objTMUsuario.getStrUsuario());
-                        Log.i("objTMUsuario", objTMUsuario.getStrPassword());
-                        Log.i("objTMUsuario", String.valueOf(objTMUsuario.getIntActivo()));
-                        Log.i("objTMUsuario", String.valueOf(objTMUsuario.getIntIdPerfil()));
-                        Log.i("objTMUsuario", String.valueOf(objTMUsuario.getStrRuta()));
-                        if(objTMUsuario.getErrorCode().trim().isEmpty() && objTMUsuario.getErrorMensaje().trim().isEmpty())
+                    objUsuarioGeo = UsuarioGeo.fromJson(x);
+                    if (objUsuarioGeo!=null) {
+                        if(objUsuarioGeo.getErrorRequest() == false && objUsuarioGeo.getCodigoMensaje() == 0)
                         {
-                            if (objTMUsuario.getStrUsuario()!=null && objTMUsuario.getStrRuta() !=null)
-                            {
-                                strUrl = objTMUsuario.getStrRuta().trim().toString();
-                            }
-                        }
-                        else
-                        {
-
+                            strUrl = "https://media.licdn.com/media/AAEAAQAAAAAAAAXGAAAAJGM2NTI1NThjLWY1NzktNDA1Yi04MWVlLTA5NWUzZGUxNzkyYQ.png";
                         }
                     }
                 }
-                else
-                {
+                else {
                     Log.i("response", "sin dato");
                 }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             return null;
         }
+
+
+
 
         @Override
         protected void onPostExecute(Void aVoid) {
@@ -309,7 +309,6 @@ public class SignInActivity extends Activity{
                 output.close();
                 input.close();
                 loginOk = true;
-
             } catch (Exception e) {
                 Log.e("Error: ", e.getMessage());
             }
@@ -336,11 +335,6 @@ public class SignInActivity extends Activity{
          * **/
         @Override
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-//            dismissDialog(progress_bar_type);
-
-            // Displaying downloaded image into image view
-            // Reading image path from sdcard
             String ruta = Environment.getExternalStorageDirectory().getPath() + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator + "hive.jpg";
             String imagePath = Environment.getExternalStorageDirectory().toString() + "/downloadedfile.jpg";
 

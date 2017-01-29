@@ -138,12 +138,16 @@ public class MenuActivity extends Activity {
 
     private void updateDisplay(int position) {
         Fragment fragment = null;
+        PersonaFragment fragmentPerson = null;
         switch (position) {
             case 0:
                 fragment = new MenuFragment();
                 break;
             case 1:
-                fragment = new PersonaFragment();
+                //fragment = new PersonaFragment();
+
+                Intent i = new Intent(this, Map.class);
+                startActivity(i);
                 break;
 //            case 2:
 //                fragment = new TB_Fragment();
